@@ -1,0 +1,137 @@
+/* ── Splash / Loading Screen ─────────────────────────────────────────────── */
+.splash-root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+  background: #1a162b;
+  background-image:
+    radial-gradient(circle at 20% 60%, rgba(99, 102, 241, 0.12) 0%, transparent 55%),
+    radial-gradient(circle at 80% 30%, rgba(168, 85, 247, 0.12) 0%, transparent 55%);
+  gap: 0;
+}
+
+/* ── Logo cluster ── */
+.splash-center {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+/* Shared ring base */
+.splash-ring {
+  position: absolute;
+  border-radius: 50%;
+  border-style: solid;
+  border-color: transparent;
+}
+
+/* Outer slow-pulsing glow ring */
+.splash-ring--outer {
+  inset: 0;
+  border-width: 2px;
+  border-top-color: rgba(139, 92, 246, 0.6);
+  border-right-color: rgba(99, 102, 241, 0.3);
+  box-shadow:
+    0 0 18px 4px rgba(139, 92, 246, 0.25),
+    inset 0 0 12px rgba(139, 92, 246, 0.1);
+  animation: spinCW 2.4s linear infinite;
+}
+
+/* Inner faster arc */
+.splash-ring--inner {
+  inset: 12px;
+  border-width: 2px;
+  border-bottom-color: rgba(168, 85, 247, 0.8);
+  border-left-color: rgba(99, 102, 241, 0.4);
+  animation: spinCCW 1.6s linear infinite;
+}
+
+@keyframes spinCW {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spinCCW {
+  to { transform: rotate(-360deg); }
+}
+
+/* Logo container */
+.splash-logo-wrap {
+  position: relative;
+  z-index: 1;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Logo pulse + float */
+.splash-logo {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 14px rgba(168, 85, 247, 0.7));
+  animation: logoPulse 2s ease-in-out infinite;
+}
+
+@keyframes logoPulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 14px rgba(168, 85, 247, 0.7));
+  }
+  50% {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 26px rgba(168, 85, 247, 1));
+  }
+}
+
+/* ── Text labels ── */
+.splash-label {
+  margin: 0 0 0.35rem;
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #ffffff 0%, #c4b5fd 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: fadeInUp 0.6s ease both 0.2s;
+}
+
+.splash-sub {
+  margin: 0;
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-size: 0.8125rem;
+  color: rgba(148, 163, 184, 0.7);
+  letter-spacing: 0.02em;
+  animation: fadeInUp 0.6s ease both 0.4s;
+}
+
+/* Dot loading animation on the subtitle text (optional flair) */
+.splash-sub::after {
+  content: '';
+  display: inline-block;
+  width: 1em;
+  animation: dots 1.4s steps(4, end) infinite;
+}
+
+@keyframes dots {
+  0%   { content: ''; }
+  25%  { content: '.'; }
+  50%  { content: '..'; }
+  75%  { content: '...'; }
+  100% { content: ''; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
