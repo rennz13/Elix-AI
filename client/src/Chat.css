@@ -1634,6 +1634,9 @@ body.chat-view[data-chat-theme='dark'] {
 
   .chat-app[data-theme='dark'].chat-app--nav-open .chat-sidebar {
     box-shadow: 8px 0 48px rgba(0, 0, 0, 0.45);
+    background: #1e1a30; /* Solid background for mobile */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
 
   .chat-sidebar__close {
