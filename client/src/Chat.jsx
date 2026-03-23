@@ -671,14 +671,6 @@ export default function Chat({ onLogout, user }) {
     setMessage('');
     setPendingImage(null);
     setIsTyping(true);
-    await saveMessage(currentChatId, 'user', serializedContent);
-    if (!hasImage) {
-      await refreshPromptUsage();
-    }
-    if (isFirstMessageInSession) {
-      const promptedAt = new Date();
-      updateSessionTitleFromFirstPrompt(currentChatId, titleSeed, promptedAt);
-    }
 
     if (hasImage) {
       const stubText = IMAGE_RECOGNITION_UNAVAILABLE_MSG;
@@ -711,7 +703,19 @@ export default function Chat({ onLogout, user }) {
         ...prev,
         [currentChatId]: [...(prev[currentChatId] || []), botMessage],
       }));
-      saveMessage(currentChatId, 'bot', response);
+
+      // Only save to database and count prompt after SUCCESS
+      await saveMessage(currentChatId, 'user', serializedContent);
+      await saveMessage(currentChatId, 'bot', response);
+      
+      if (!hasImage) {
+        await refreshPromptUsage();
+      }
+
+      if (isFirstMessageInSession) {
+        const promptedAt = new Date();
+        updateSessionTitleFromFirstPrompt(currentChatId, titleSeed, promptedAt);
+      }
     } catch (error) {
       const fallbackText =
         typeof error?.message === 'string' && error.message.trim()
@@ -727,8 +731,9 @@ export default function Chat({ onLogout, user }) {
         ...prev,
         [currentChatId]: [...(prev[currentChatId] || []), botMessage],
       }));
-      saveMessage(currentChatId, 'bot', fallbackText);
-      console.error('Failed to get bot response');
+      // We do NOT save the user message or bot error message to the DB here,
+      // so the prompt credit is NOT reduced on failure.
+      console.error('Failed to get bot response:', error);
     } finally {
       setIsTyping(false);
     }
