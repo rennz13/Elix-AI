@@ -18,12 +18,18 @@ app.use(
       // Allow direct access (browser URL bar), same-origin, or health checks
       if (!origin) return callback(null, true);
 
-      if (ALLOWED_ORIGINS.length === 0 || ALLOWED_ORIGINS.includes(origin)) {
+      // If no origins configured, or set to '*', allow all (for debugging)
+      if (ALLOWED_ORIGINS.length === 0 || ALLOWED_ORIGINS.includes("*")) {
+        return callback(null, true);
+      }
+
+      if (ALLOWED_ORIGINS.includes(origin)) {
         return callback(null, true);
       }
       
       console.error(`Blocked by CORS: origin '${origin}' not in [${ALLOWED_ORIGINS.join(", ")}]`);
-      return callback(new Error("CORS not allowed"), false);
+      // Use (null, false) instead of (Error) to prevent 500 Internal Server Error
+      return callback(null, false);
     },
     optionsSuccessStatus: 200,
   })
