@@ -15,15 +15,15 @@ const ALLOWED_ORIGINS = RAW_ORIGINS
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow server-to-server calls (no origin header) only in development
-      if (!origin) {
-        if (process.env.NODE_ENV !== "production") return callback(null, true);
-        return callback(new Error("No origin"), false);
-      }
+      // Allow direct access (browser URL bar), same-origin, or health checks
+      if (!origin) return callback(null, true);
+
       if (ALLOWED_ORIGINS.length === 0 || ALLOWED_ORIGINS.includes(origin)) {
         return callback(null, true);
       }
-      return callback(new Error(`CORS: origin '${origin}' not allowed`), false);
+      
+      console.error(`Blocked by CORS: origin '${origin}' not in [${ALLOWED_ORIGINS.join(", ")}]`);
+      return callback(new Error("CORS not allowed"), false);
     },
     optionsSuccessStatus: 200,
   })
